@@ -1,0 +1,10 @@
+{
+  "@@locale": "hu",
+  "appTitle": "Hang App",
+  "homeTitle": "Otthon",
+  "sportsTitle": "Sport",
+  "walkTitle": "Séta",
+  "settingsTitle": "Beállítások",
+  "connectButton": "Csatlakozás a nyakörvhöz",
+  "installSoundsButton": "Hangfájlok telepítése"
+}

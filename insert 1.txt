@@ -1,0 +1,70 @@
+Future<void> _sendCommand(int index) async {
+    setState(() {
+      _isLoading = true;
+      _statusMessage = 'Connecting to device...';
+    });
+
+    BluetoothDevice device = BluetoothDevice.fromId("A0:DD:6C:10:32:FA");
+    int retryCount = 0;
+    const int maxRetries = 5;
+    bool connected = false;
+
+    while (retryCount < maxRetries && !connected) {
+      try {
+        Command cmd = _getCmd(index);
+        Uint8List data = Uint8List.fromList([cmd.type, cmd.volume, cmd.level]);
+        await device.connect();
+        connected = true;
+
+        setState(() {
+          _statusMessage = 'Connected. Discovering services...';
+        });
+
+        List<BluetoothService> services = await device.discoverServices();
+        BluetoothService service = services.firstWhere(
+          (s) => s.uuid == Guid("2f87e77d-16aa-47fd-b85c-b6990920c1fd")
+        );
+        BluetoothCharacteristic characteristic = service.characteristics.firstWhere(
+          (c) => c.uuid == Guid("6b79f0ee-2a6a-4890-b3d4-a8b6a3a4814a")
+        );
+
+        setState(() {
+          _statusMessage = 'Sending command...';
+        });
+
+        await characteristic.write(data, withoutResponse: false);
+
+        setState(() {
+          _statusMessage = 'Command sent successfully!';
+        });
+
+        break;
+      } 
+      catch (e) {
+        retryCount++;
+        print('Error sending command (attempt $retryCount): $e');
+
+        setState(() {
+          _statusMessage = 'Error: ${e.toString()}\nRetrying... (Attempt $retryCount of $maxRetries)';
+        });
+
+        if (retryCount < maxRetries) {
+          await Future.delayed(const Duration(seconds: 2));
+        }
+      } finally {
+          if (connected) {
+            await device.disconnect();
+          }
+      }
+    }
+
+    if (!connected) {
+      setState(() {
+        _statusMessage = 'Failed to send command after $maxRetries attempts. Please try again later.';
+      });
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }

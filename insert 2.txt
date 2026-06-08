@@ -1,0 +1,13 @@
+class Command {
+  final int type;
+  final int volume;
+  final int level;
+
+  Command(this.type, this.volume, this.level);
+
+  List<int> toBytes() {
+    return [type, volume, level];
+  }
+}
+
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';

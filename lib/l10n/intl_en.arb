@@ -1,0 +1,10 @@
+{
+  "@@locale": "en",
+  "appTitle": "Sound App",
+  "homeTitle": "Home",
+  "sportsTitle": "Sports",
+  "walkTitle": "Walk",
+  "settingsTitle": "Settings",
+  "connectButton": "Connect to the dog collar",
+  "installSoundsButton": "Install sound files"
+}
